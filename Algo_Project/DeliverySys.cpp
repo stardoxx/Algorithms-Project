@@ -7,36 +7,102 @@ class country;  // class for connecting cities across country
 
 class graph{
         int vertices;
-        //int ** adj;
         list<ipair> * adjlist;
         map<string,int> indexMap;
         map<int,string> nameMap;
+        int mini;
+        int *minipath;
     public:
         friend class city;
         friend class country;
-        graph()
+        graph(){}
+        /*
+			Check if all Must Visited nodes are traversed or not
+				true -> All must visited are traversed
+				false -> otherwise
+        */
+        bool isAllVisited(bool visit[],vector<int>mustvisit)
         {
-
+                for(int i=0;i<mustvisit.size();i++)
+                {
+                    if(visit[mustvisit[i]] == false )
+                        return false;
+                }
+                return true;
         }
+
+        void startthegame(int parent,bool visit[],int path[],vector<int>mustvisit,int cost)
+        {
+        	visit[parent] = true;
+        	if(isAllVisited(visit,mustvisit) == true)
+        	{
+        		if(cost<mini)
+        		{
+        			mini = cost;
+        			for(int i=0;i<vertices;i++)
+        				minipath[i] = path[i];
+        		}
+        	}else{
+        		for(auto it = adjlist[parent].begin();it!=adjlist[parent].end();it++)
+        		{
+        			if(visit[it->first] == false)
+        			{
+        				path[it->first] = parent;
+        				startthegame(it->first,visit,path,mustvisit,cost+it->second);
+        				path[it->first] = -1;
+        			}
+        		}
+        	}
+        	visit[parent] = false;
+        	return;
+        }
+
+        void pathfinder()
+        {
+        	mini = INT_MAX;
+        	vector<int>mustvisit;
+        	mustvisit.push_back(2);mustvisit.push_back(6);mustvisit.push_back(7);mustvisit.push_back(1);
+        	bool visit[vertices] = {false};
+        	int path[vertices];
+        	for(int i=0;i<vertices;i++)
+        		path[i] = -1;
+        	bool startingNode = 0;
+        	path[startingNode] = -2;
+        	visit[startingNode] = true;
+        	for(auto it = adjlist[startingNode].begin();it!=adjlist[startingNode].end();++it)
+        	{
+        		path[it->first] = startingNode;
+        		startthegame(it->first,visit,path,mustvisit,it->second);
+        		path[it->first] = -1;
+        	}
+        	cout<<endl<<endl;
+        	cout<<mini<<endl<<endl;
+        	for(int i=0;i<vertices;i++)
+        		cout<<i<<" "<<minipath[i]<<"  "<<endl;
+        }
+
+        
+
+
         graph(int v){
             this->vertices = v;
             adjlist = new list < ipair >[v];
-            //adj = new int *[v];
-            //for(int i =0;i<v;i++){
-            //    adj[i] = new int [v];
-            //    memset(adj[i], 0, v * sizeof(int));
-            //}
+            mini = INT_MAX;
+            minipath = new int [v];
         }
         void constructorhelper(int v)
         {
             this->vertices = v;
             adjlist = new list < ipair >[v];
-            //adj = new int *[v];
-            //for(int i =0;i<v;i++){
-            //    adj[i] = new int [v];
-            //    memset(adj[i], 0, v * sizeof(int));
-            //}
+            mini = INT_MAX;
+            minipath = new int [v];
         }
+        void addEdge(int u,int v,int weight)
+        {
+            adjlist[u].push_back(make_pair(v,weight));
+            adjlist[v].push_back(make_pair(u,weight));
+        }
+
         void addAllCityName()
         {
             int i=0;
@@ -68,49 +134,19 @@ class graph{
             indexMap.insert(make_pair(placeName,i));//mapping places with index
             nameMap.insert(make_pair(i,placeName));
         }
-        void addEdge(int u,int v,int weight)
-        {
-            adjlist[u].push_back(make_pair(weight,v));
-            adjlist[v].push_back(make_pair(weight,u));
-        }
+        
         void printGraph()
         {
             list<ipair>::iterator it;
             for(int i=0;i<vertices;i++)
             {
-                cout<<nameMap[i]<<" ";
+                cout<<nameMap[i]<<endl;
                 for(it = adjlist[i].begin();it!=adjlist[i].end();++it)
                 {
-                    cout<<i<<" "<<it->second<<endl;
+                    cout<<i<<" "<<it->first<<endl;
                 }
             }
         }
-        /*void formNetwork(){
-            for(int i =0;i<vertices;i++){
-                cout<<"enter name of place: "<<endl;
-                string placeName;
-                cin>>placeName;
-                indexMap.insert(make_pair(placeName,i));//mapping places with index
-                nameMap.insert(make_pair(i,placeName));//mapping index with places
-            }
-            for(int i=0;i<vertices;i++){
-                for(int j =0;j<vertices;j++){
-                    map<int,string>:: iterator itr1,itr2;
-                    itr1 = nameMap.find(i);
-                    itr2 = nameMap.find(j);
-                    cout<<"connect between "<<itr1->second<<" "<<itr2->second<<endl;
-                    int k;
-                    cout<<"enter -1 for no connections "<<endl;
-                    cin >> k;
-                    if(k == -1){
-                        adj[i][j] = INT_MAX;
-                    }
-                    else{
-                        adj[i][j] = k;
-                    }
-                }
-            }
-        }*/
         // function for taking paths commented so that you use according to your use case
         /*
             void showPath(int path[][v],int u,int w){
@@ -209,6 +245,7 @@ class city{
         }
         void printGraph(){
             g->printGraph();
+            g->pathfinder();
         }
 
 };
@@ -219,15 +256,18 @@ int main(){
     c1->addNameAndPlaces("abc",9);
     c1->addAllCityName();
     c1->addEdge(0,1,1);
-     c1->addEdge(1,2,4);
-    c1->addEdge(1,5,3);
+    c1->addEdge(0,2,1);
+    c1->addEdge(0,3,1);
+    c1->addEdge(1,2,1);
+    c1->addEdge(1,4,1);
+    c1->addEdge(2,3,1);
     c1->addEdge(2,4,1);
-    c1->addEdge(2,3,2);
-    c1->addEdge(3,8,1);
-    c1->addEdge(7,8,3);
-    c1->addEdge(6,8,5);
-    c1->addEdge(0,6,2);
-    c1->addEdge(6,7,2);
+    c1->addEdge(3,5,1);
+    c1->addEdge(4,6,1);
+    c1->addEdge(4,7,1);
+    c1->addEdge(5,7,1);
+   	c1->addEdge(6,8,1);
+   	c1->addEdge(7,8,1);
     c1->printGraph();
     return 0;
 }
