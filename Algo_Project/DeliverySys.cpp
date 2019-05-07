@@ -401,6 +401,11 @@ class graph{
 		  
 		 
 		    TSPRec(curr_bound, 0, 1, curr_path); 
+            for(int i=0;i<=vertices;i++){
+                cout<<finalpathforTSP[i]<<" ";
+            }
+            cout<<endl;
+            cout<<"cost = "<<final_res<<endl;
 		} 
         
 };
@@ -438,8 +443,12 @@ class country{
         }
         void printGraph(){
             g->printGraph();
-            g->pathfinder();
+            //g->pathfinder();
         }
+        void tour(){
+            g->TSP();
+        }
+
 
 };
 
@@ -489,7 +498,7 @@ class city{
 int main(){
     city *c1;
     c1 = new city;
-    c1->addNameAndPlaces("abc",9);
+   /* c1->addNameAndPlaces("abc",9);
     c1->addAllCityName();
     c1->addEdge(0,1,1);
     c1->addEdge(0,2,1);
@@ -504,6 +513,25 @@ int main(){
     c1->addEdge(5,7,1);
    	c1->addEdge(6,8,1);
    	c1->addEdge(7,8,1);
-    c1->printGraph();
+    c1->printGraph();*/
+    country *ind;
+    ind = new country;
+    ind->addNameAndPlaces("xyz",9);
+    ind->addAllCityName();
+    ind->addEdge(0,1,1);
+    ind->addEdge(0,2,2);
+    ind->addEdge(0,3,1);
+    ind->addEdge(1,2,10);
+    ind->addEdge(1,4,1);
+    ind->addEdge(2,3,3);
+    ind->addEdge(2,4,1);
+    ind->addEdge(3,5,3);
+    ind->addEdge(4,6,1);
+    ind->addEdge(4,7,3);
+    ind->addEdge(5,7,1);
+    ind->addEdge(6,8,4);
+    ind->addEdge(7,8,6);
+    ind->printGraph();
+    ind->tour();
     return 0;
 }
