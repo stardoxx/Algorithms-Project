@@ -18,7 +18,7 @@ class graph{
         int lastvertex;
         int *finalpathforTSP;
         int final_res;
-        int * visitedforTSP;
+        bool * visitedforTSP;
     public:
         friend class city;
         friend class country;
@@ -126,7 +126,7 @@ class graph{
             path = new int *[v];
             final_res = INT_MAX;
          	finalpathforTSP = new int [v+1];  
-         	visitedforTSP = new int[v];
+         	visitedforTSP = new bool[v];
             for(int i=0;i<v;i++)
             {
             	adjmatrix[i] = new int[v];
@@ -136,7 +136,9 @@ class graph{
          	for(int i=0;i<v;i++)
          	{
          		for(int j=0;j<v;j++)
-         			adjmatrix[i][j] = INT_MAX;
+         		{
+	         		adjmatrix[i][j] = 0;	
+         		}
          	}
         }
         void constructorhelper(int v)
@@ -150,7 +152,7 @@ class graph{
             path = new int *[v];
             final_res = INT_MAX;
             finalpathforTSP = new int [v+1];
-            visitedforTSP = new int[v];
+            visitedforTSP = new bool[v];
             for(int i=0;i<v;i++)
             {
             	adjmatrix[i] = new int[v];
@@ -160,7 +162,9 @@ class graph{
          	for(int i=0;i<v;i++)
          	{
          		for(int j=0;j<v;j++)
-         			adjmatrix[i][j] = INT_MAX;
+         		{
+	         		adjmatrix[i][j] = 0;
+         		}
          	}
          	 
         }
@@ -290,6 +294,7 @@ class graph{
  
 		void copyToFinal(int curr_path[]) 
 		{ 
+
 		    for (int i=0; i<vertices; i++) 
 		        finalpathforTSP[i] = curr_path[i]; 
 		    finalpathforTSP[vertices] = curr_path[0]; 
@@ -319,16 +324,14 @@ class graph{
 		            second = first; 
 		            first = adjmatrix[i][j]; 
 		        } 
-		        else if (adjmatrix[i][j] <= second && 
-		                 adjmatrix[i][j] != first) 
+		        else if (adjmatrix[i][j] <= second && adjmatrix[i][j] != first) 
 		            second = adjmatrix[i][j]; 
 		    } 
 		    return second; 
 		} 
 		  
 		 
-		void TSPRec(int curr_bound, int curr_weight, 
-		            int level, int curr_path[]) 
+		void TSPRec(int curr_bound, int curr_weight, int level, int curr_path[]) 
 		{ 
 		     
 		    if (level==vertices) 
@@ -337,9 +340,7 @@ class graph{
 		        if (adjmatrix[curr_path[level-1]][curr_path[0]] != 0) 
 		        { 
 		     
-		            int curr_res = curr_weight + 
-		                    adjmatrix[curr_path[level-1]][curr_path[0]]; 
-		  
+		            int curr_res = curr_weight + adjmatrix[curr_path[level-1]][curr_path[0]]; 
 		     
 		            if (curr_res < final_res) 
 		            { 
@@ -354,8 +355,7 @@ class graph{
 		    for (int i=0; i<vertices; i++) 
 		    { 
 		      
-		        if (adjmatrix[curr_path[level-1]][i] != 0 && 
-		            visitedforTSP[i] == false) 
+		        if (adjmatrix[curr_path[level-1]][i] != 0 && visitedforTSP[i] == false) 
 		        { 
 		            int temp = curr_bound; 
 		            curr_weight += adjmatrix[curr_path[level-1]][i]; 
@@ -371,19 +371,18 @@ class graph{
 		            { 
 		                curr_path[level] = i; 
 		                visitedforTSP[i] = true; 
-		  
-		     
-		                TSPRec(curr_bound, curr_weight, level+1, 
-		                       curr_path); 
+		                TSPRec(curr_bound, curr_weight, level+1, curr_path); 
 		            } 
-		  
-		      
+		
 		            curr_weight -= adjmatrix[curr_path[level-1]][i]; 
 		            curr_bound = temp; 
 		  
-		      
-		            memset(visitedforTSP, false, sizeof(visitedforTSP)); 
-		            for (int j=0; j<=level-1; j++) 
+		      		for(int it = 0;it<vertices;it++)
+		      		{
+		      			visitedforTSP[i] = false;
+		      		}
+		            
+					for (int j=0; j<=level-1; j++) 
 		                visitedforTSP[curr_path[j]] = true; 
 		        } 
 		    } 
@@ -392,26 +391,23 @@ class graph{
 		{ 
 		    int curr_path[vertices+1]; 
 		    int curr_bound = 0; 
-		    memset(curr_path, -1, sizeof(curr_path)); 
-		    memset(visitedforTSP, 0, sizeof(curr_path)); 
-		  
+		    for(int i=0;i<vertices+1;i++)
+        		curr_path[i] = -1;
+    		for(int i=0;i<vertices;i++)
+        		visitedforTSP[i] = false;
 
 		    for (int i=0; i<vertices; i++) 
-		        curr_bound += (firstMin(i) + 
-		                       secondMin(i)); 
+		        curr_bound += (firstMin(i) + secondMin(i)); 
 		  
 
-		    curr_bound = (curr_bound&1)? curr_bound/2 + 1 : 
-		                                 curr_bound/2; 
-		  
-		 
+		    curr_bound = (curr_bound&1) ? curr_bound/2 + 1 : curr_bound/2; 
 		    visitedforTSP[0] = true; 
 		    curr_path[0] = 0; 
 		  
 		 
 		    TSPRec(curr_bound, 0, 1, curr_path); 
             for(int i=0;i<=vertices;i++){
-                cout<<finalpathforTSP[i]<<" ";
+                cout<<nameMap[finalpathforTSP[i]]<<" >> ";
             }
             cout<<endl;
             cout<<"cost = "<<final_res<<endl;
