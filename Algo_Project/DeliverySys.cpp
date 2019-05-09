@@ -170,7 +170,7 @@ class graph{
             adjlist[v].push_back(make_pair(u,weight));
             adjmatrix[u][v] = adjmatrix[v][u] = weight;
         }
-
+        /*
         void addAllCityName()
         {
             int i=0;
@@ -201,6 +201,15 @@ class graph{
             i=8;placeName="eight";
             indexMap.insert(make_pair(placeName,i));//mapping places with index
             nameMap.insert(make_pair(i,placeName));
+        }*/
+
+        void addAllCityName(int count,string *names){
+            string placeName;
+            for(int i=0;i<count;i++){
+                placeName = names[i];
+                indexMap.insert(make_pair(placeName,i));//mapping places with index
+                nameMap.insert(make_pair(i,placeName));
+            }
         }
         
         void printGraph()
@@ -496,9 +505,9 @@ class city{
 };
 
 int main(){
-    city *c1;
+   /* city *c1;
     c1 = new city;
-   /* c1->addNameAndPlaces("abc",9);
+   c1->addNameAndPlaces("abc",9);
     c1->addAllCityName();
     c1->addEdge(0,1,1);
     c1->addEdge(0,2,1);
@@ -514,7 +523,7 @@ int main(){
    	c1->addEdge(6,8,1);
    	c1->addEdge(7,8,1);
     c1->printGraph();*/
-    country *ind;
+   /* country *ind;
     ind = new country;
     ind->addNameAndPlaces("xyz",9);
     ind->addAllCityName();
@@ -532,6 +541,66 @@ int main(){
     ind->addEdge(6,8,4);
     ind->addEdge(7,8,6);
     ind->printGraph();
-    ind->tour();
+    ind->tour();*/
+    //entering data 
+    country * centralIndia = new country;
+    centralIndia->addNameAndPlaces("Central India",5);
+    string placesArray[5] ={"Centre","Delhi","Gurugram","Noida","Ghaziabad"};
+    centralIndia->addAllCityName(5,placesArray);
+    centralIndia->addEdge(0,1,3);
+    centralIndia->addEdge(0,2,4);
+    centralIndia->addEdge(2,4,1);
+    centralIndia->addEdge(1,2,7);
+    centralIndia->addEdge(3,1,5);
+    centralIndia->addEdge(2,3,8);
+    centralIndia->addEdge(3,4,4);
+    centralIndia->addEdge(1,4,1);
+    city *delhi = new delhi;
+    delhi->addNameAndPlaces("Delhi",6);
+    string delhiPlaces[6] ={"Hauz khas","Defence Colony","Alaknanda","Saket","Lajpat Nagar","Vasant Kunj"};
+    delhi->addAllCityName(6,delhiPlaces);
+    delhi->addEdge(0,2,3);
+    delhi->addEdge(1,2,1);
+    delhi->addEdge(0,4,3);
+    delhi->addEdge(2,3,4);
+    delhi->addEdge(3,4,4);
+    delhi->addEdge(3,5,2);
+    delhi->addEdge(5,4,1);
+    //noida
+    city *noida = new city;
+    noida->addNameAndPlaces("Noida",5);
+    string noida[5] ={"Noida centre","sector-1","sector-2","sector-3","sector-4"};
+    noida->addEdge(0,1,10);
+    noida->addEdge(0,3,12);
+    noida->addEdge(0,2,7);
+    noida->addEdge(3,1,20);
+    noida->addEdge(3,4,32);
+    noida->addEdge(0,4,60);
+    //gurugram
+    city *gurugram = new city;
+    gurugram->addNameAndPlaces("Gurugram",5);
+    string gurugramPlaces[5] = {"Chandan Vihar","Surya Vihar","Krishna Kunj","Sai Kunj","Hans Enclave"};
+    gurugram->addAllCityName(5,gurugramPlaces);
+    gurugram->addEdge(0,1,2);
+    gurugram->addEdge(0,2,1);
+    gurugram->addEdge(1,3,3);
+    gurugram->addEdge(2,3,5);
+    gurugram->addEdge(2,4,4);
+    gurugram->addEdge(3,4,6);
+    gurugram->addEdge(1,2,4);
+    //ghaziabad
+    city *ghaziabad = new city;
+    ghaziabad->addNameAndPlaces("Ghaziabad",6);
+    string ghaziabadPlaces[6] ={"Shipra Suncity","Raj Nagar","Dasna","Lal Kuan","Siddhath vihar","Vaibhav Khand"};
+    ghaziabad->addAllCityName(6,ghaziabadPlaces);
+    ghaziabad->addEdge(0,1,9);
+    ghaziabad->addEdge(0,2,3);
+    ghaziabad->addEdge(0,3,7);
+    ghaziabad->addEdge(1,5,4);
+    ghaziabad->addEdge(1,2,1);
+    ghaziabad->addEdge(3,2,8);
+    ghaziabad->addEdge(3,4,1);
+    ghaziabad->addEdge(2,4,2);
+    ghaziabad->addEdge(4,5,5);
     return 0;
 }
